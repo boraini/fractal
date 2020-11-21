@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math/cmplx"
 	"log"
 	"os"
 	"sync"
@@ -102,16 +103,17 @@ func paint(r float64, n int) color.RGBA {
 }
 
 func mandelbrotIter(px, py float64, maxIter int) (float64, int) {
-	var x, y, xx, yy, xy float64
+	var current complex128
+  pxipy := complex(px, py)
 
 	for i := 0; i < maxIter; i++ {
-		xx, yy, xy = x * x, y * y, x * y
-		if xx + yy > 4 {
-			return xx + yy, i
+		magnitude := cmplx.Abs(current)
+		if magnitude > 2 {
+			return magnitude * magnitude, i
 		}
-		x = xx - yy + px
-		y = 2 * xy + py
+		current = current * current + pxipy
 	}
 
-	return xx + yy, maxIter
+	magnitude := cmplx.Abs(current)
+	return magnitude * magnitude, maxIter
 }
